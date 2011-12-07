@@ -1,0 +1,10 @@
+name 'tribily-mmm'
+version '1.0'
+
+author 'Walter Heck'
+license 'GPL v2'
+project_page ''
+source ''
+summary 'A puppet module to manage MMM for MySQL'
+description ''
+dependency 'tribily/mariadb', '>=1.0'
