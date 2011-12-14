@@ -32,7 +32,7 @@ define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $po
   $replication_password, $agent_user, $agent_password, $monitor_user, 
   $monitor_password, $monitor_ip, $masters = [], $slaves = [], $readers = [], 
   $writer_virtual_ip, $reader_virtual_ips = [], $localsubnet, 
-  $reader-user, $reader-pass, $writer-user, $writer-pass) {
+  $reader_user, $reader_pass, $writer_user, $writer_pass) {
   
   # massive workaround to get our list of masters in comma separated format
   # Doesn't work with puppet 2.6.2, works with 2.7.6
@@ -65,13 +65,13 @@ define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $po
     agent_user           => $agent_user,
     agent_password       => $agent_password ,
     cluster_interface    => $cluster_interface,
-    cluster_name     => $real_cluster_name,
+    cluster_name         => $real_cluster_name,
     master_names         => $master_names,
     master_ips           => $master_ips,
     slave_ips            => $slave_ips,
-    masters         => $masters,
-    slaves              => $slaves,
-    readers             => $readers,
+    masters              => $masters,
+    slaves               => $slaves,
+    readers              => $readers,
     writer_virtual_ip    => $writer_virtual_ip,
     reader_virtual_ips   => $reader_virtual_ips,
   }
@@ -86,17 +86,17 @@ define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $po
         agent_password       => $agent_password,
         monitor_user         => $monitor_user,
         monitor_password     => $monitor_password,
-        reader-user          => $reader-user, 
-        reader-pass          => $reader-pass,
-        writer-user          => $writer-user,      
-        writer-pass          => $writer-user,
+        reader_user          => $reader_user, 
+        reader_pass          => $reader_pass,
+        writer_user          => $writer_user,      
+        writer_pass          => $writer_user,
       }
     }
     'monitor': {
       mmm::monitor::config{ $name:
         port                 => $port,
-        cluster_name     => $real_cluster_name,
-        monitor_ip       => $monitor_ip,
+        cluster_name         => $real_cluster_name,
+        monitor_ip           => $monitor_ip,
         master_ips           => $master_ips,
         slave_ips            => $slave_ips,
         monitor_user         => $monitor_user,

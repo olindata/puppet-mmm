@@ -1,6 +1,6 @@
 define mmm::agent::config($localsubnet, $replication_user, 
   $replication_password, $agent_user, $agent_password, $monitor_user, 
-  $monitor_password, $reader-user, $reader-pass, $writer-user, $writer-pass) {
+  $monitor_password, $reader_user, $reader_pass, $writer_user, $writer_pass) {
   
   # GRANT REPLICATION CLIENT                 ON *.* TO 'mmm_monitor'@'192.168.%' IDENTIFIED BY 'monitor_password';
   # GRANT SUPER, REPLICATION CLIENT, PROCESS ON *.* TO 'mmm_agent'@'192.168.%'   IDENTIFIED BY 'agent_password';
@@ -45,18 +45,18 @@ define mmm::agent::config($localsubnet, $replication_user,
         withgrants      => true
     }
 
-  mariadb::user{ $reader-user:
-        username        => $reader-user,
-        pw              => $reader-pass,
+  mariadb::user{ $reader_user:
+        username        => $reader_user,
+        pw              => $reader_pass,
         dbname          => "*",
         grants          => "SELECT",
         host_to_grant   => $localsubnet, 
         dbhost          => 'localhost', 
         withgrants      => false
     }
-  mariadb::user{ $writer-user:
-        username        => $writer-user,
-        pw              => $writer-pass,
+  mariadb::user{ $writer_user:
+        username        => $writer_user,
+        pw              => $writer_pass,
         dbname          => "*",
         grants          => "SELECT, UPDATE, INSERT, DELETE",
         host_to_grant   => $localsubnet, 
