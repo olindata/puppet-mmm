@@ -14,6 +14,12 @@ define mmm::common::config($replication_user, $replication_password, $agent_user
       }
     }
     default: {
+      if ($mmm::params::multi_cluster_monitor) {
+        $common_dot_conf_name = "/etc/mysql-mmm/mmm_common_${cluster_name}.conf"
+      } else {
+        $common_dot_conf_name = "/etc/mysql-mmm/mmm_common.conf"
+      }
+      
       
       # since mmm::common::config can be defined multipe times when there 
       # are multiple clusters on one monitor, we need to check here to 
@@ -27,7 +33,7 @@ define mmm::common::config($replication_user, $replication_password, $agent_user
         }
       }
 
-      file { "/etc/mysql-mmm/mmm_common_${cluster_name}.conf":
+      file { $common_dot_conf_name:
         ensure  => present,
         mode  => 0600,
         owner  => "root",
