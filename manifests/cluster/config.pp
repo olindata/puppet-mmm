@@ -32,7 +32,7 @@ define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $po
   $replication_password, $agent_user, $agent_password, $monitor_user, 
   $monitor_password, $monitor_ip, $masters = [], $slaves = [], $readers = [], 
   $writer_virtual_ip, $reader_virtual_ips = [], $localsubnet, 
-  $reader_user, $reader_pass, $writer_user, $writer_pass) {
+  $reader_user, $reader_pass, $writer_user, $writer_pass, $mmm_type) {
   
   # massive workaround to get our list of masters in comma separated format
   # Doesn't work with puppet 2.6.2, works with 2.7.6
@@ -49,7 +49,7 @@ define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $po
   # bad way to get the mmm::common::config to create a non-renamed config 
   # file when this is an agent node (on an agent node there is no need to be 
   # aware of multiple clusters as an agent is always only part of one cluster)
-  if $::mmm_type == 'agent' {
+  if $mmm_type == 'agent' {
     $real_cluster_name = ''
   } else {
     $real_cluster_name = $cluster_name
@@ -76,7 +76,7 @@ define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $po
     reader_virtual_ips   => $reader_virtual_ips,
   }
 
-  case $::mmm_type {
+  case $mmm_type {
     'agent': {      
       mmm::agent::config{ $name:
         localsubnet          => $localsubnet,
@@ -103,7 +103,7 @@ define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $po
         monitor_password     => $monitor_password,
       }
     }
-    default: { err("No ${::mmm_type} defined for this node") }
+    default: { err("No ${mmm_type} defined for this node") }
   }
   
 }
