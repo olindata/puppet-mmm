@@ -32,23 +32,36 @@ define mmm::monitor::config($port, $cluster_name, $monitor_ip, $master_ips,
         $mon_dot_conf_name = "/etc/mysql-mmm/mmm_mon_${cluster_name}.conf"
         $mon_init_d_name   = "/etc/init.d/mysql-mmm-monitor-${cluster_name}"
         $service_name      = "mysql-mmm-monitor-${cluster_name}"
+        
+        # since mmm::monitor::config can be defined multipe times when there 
+        # are multiple clusters on one monitor, we need to check here to 
+        # make sure we don't double-define the normal common file to be 
+        # excluded
+        if defined(File["/etc/mysql-mmm/mmm_mon.conf"]) {
+          notice("/etc/mysql-mmm/mmm_mon.conf already defined, skipping in module mmm:monitor::config")
+        } else {
+          file { "/etc/mysql-mmm/mmm_mon.conf":
+            ensure  => absent,
+          }
+        }
+        # since mmm::monitor::config can be defined multipe times when there 
+        # are multiple clusters on one monitor, we need to check here to 
+        # make sure we don't double-define the normal init.d file to be 
+        # excluded
+          if defined(File["/etc/init.d/mysql-mmm-monitor"]) {
+          notice("/etc/init.d/mysql-mmm-monitor already defined, skipping in module mmm:monitor::config")
+        } else {
+          file { "/etc/init.d/mysql-mmm-monitor":
+            ensure  => absent,
+          }
+        }
+        
       } else {
         $mon_dot_conf_name = "/etc/mysql-mmm/mmm_mon.conf"
         $mon_init_d_name   = "/etc/init.d/mysql-mmm-monitor"
         $service_name      = "mysql-mmm-monitor"
       }
       
-      # since mmm::monitor::config can be defined multipe times when there 
-      # are multiple clusters on one monitor, we need to check here to 
-      # make sure we don't double-define the normal common file to be 
-      # excluded
-      if defined(File["/etc/mysql-mmm/mmm_mon.conf"]) {
-        notice("/etc/mysql-mmm/mmm_mon.conf already defined, skipping in module mmm:monitor::config")
-      } else {
-        file { "/etc/mysql-mmm/mmm_mon.conf":
-          ensure  => absent,
-        }
-      }
       
       file { $mon_dot_conf_name:
         ensure  => present,
@@ -57,17 +70,6 @@ define mmm::monitor::config($port, $cluster_name, $monitor_ip, $master_ips,
         group  => "root",
         content   => template("mmm/mmm_mon.conf.erb"),
         require   => Package["mysql-mmm-monitor"],
-      }
-      # since mmm::monitor::config can be defined multipe times when there 
-      # are multiple clusters on one monitor, we need to check here to 
-      # make sure we don't double-define the normal init.d file to be 
-      # excluded
-        if defined(File["/etc/init.d/mysql-mmm-monitor"]) {
-        notice("/etc/init.d/mysql-mmm-monitor already defined, skipping in module mmm:monitor::config")
-      } else {
-        file { "/etc/init.d/mysql-mmm-monitor":
-          ensure  => absent,
-        }
       }
       
       
