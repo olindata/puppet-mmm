@@ -9,17 +9,17 @@
 include mmm_common<% if cluster_name != '' %>_<%= cluster_name %><% end %>.conf
 
 <monitor>
-  ip            <%= scope.lookupvar("monitor_ip")%>
+  ip              <%= scope.lookupvar("monitor_ip")%>
   pid_path        /var/run/mmm_mond<% if cluster_name != '' %>_<%= cluster_name %><% end %>.pid
   bin_path        /usr/lib/mysql-mmm/
-  status_path        /var/lib/misc/mmm_mond<% if cluster_name != '' %>_<%= cluster_name %><% end %>.status
+  status_path     /var/lib/misc/mmm_mond<% if cluster_name != '' %>_<%= cluster_name %><% end %>.status
   ping_ips        <%= (master_ips+slave_ips).flatten.join(', ') %>
-  auto_set_online      60
+  auto_set_online 60
   <% if cluster_name != '' %>port          <%= port %><% end %>
 </monitor>
 
 <host default>
-  monitor_user      <%= scope.lookupvar("monitor_user")%>
+  monitor_user        <%= scope.lookupvar("monitor_user")%>
   monitor_password    <%= scope.lookupvar("monitor_password")%>
 </host>
 

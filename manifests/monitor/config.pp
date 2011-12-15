@@ -28,11 +28,21 @@ define mmm::monitor::config($port, $cluster_name, $monitor_ip, $master_ips,
       }
     }
     default: {
+      if ($mmm::params::multi_cluster_monitor) {
+        $mon_dot_conf_name = "/etc/mysql-mmm/mmm_mon_${cluster_name}.conf"
+        $mon_init_d_name   = "/etc/init.d/mysql-mmm-monitor-${cluster_name}"
+        $service_name      = "mysql-mmm-monitor-${cluster_name}"
+      } else {
+        $mon_dot_conf_name = "/etc/mysql-mmm/mmm_mon.conf"
+        $mon_init_d_name   = "/etc/init.d/mysql-mmm-monitor"
+        $service_name      = "mysql-mmm-monitor"
+      }
+      
       # since mmm::monitor::config can be defined multipe times when there 
       # are multiple clusters on one monitor, we need to check here to 
       # make sure we don't double-define the normal common file to be 
       # excluded
-        if defined(File["/etc/mysql-mmm/mmm_mon.conf"]) {
+      if defined(File["/etc/mysql-mmm/mmm_mon.conf"]) {
         notice("/etc/mysql-mmm/mmm_mon.conf already defined, skipping in module mmm:monitor::config")
       } else {
         file { "/etc/mysql-mmm/mmm_mon.conf":
@@ -40,7 +50,7 @@ define mmm::monitor::config($port, $cluster_name, $monitor_ip, $master_ips,
         }
       }
       
-      file { "/etc/mysql-mmm/mmm_mon_${cluster_name}.conf":
+      file { $mon_dot_conf_name:
         ensure  => present,
         mode  => 0600,
         owner  => "root",
@@ -61,7 +71,7 @@ define mmm::monitor::config($port, $cluster_name, $monitor_ip, $master_ips,
       }
       
       
-      file { "/etc/init.d/mysql-mmm-monitor-${cluster_name}":
+      file { $mon_init_d_name:
         ensure  => present,
         mode  => 0755,
         owner  => "root",
@@ -69,7 +79,7 @@ define mmm::monitor::config($port, $cluster_name, $monitor_ip, $master_ips,
         content   => template("mmm/mon-init-d.erb"),
         require   => Package["mysql-mmm-monitor"],
       }
-      service { "mysql-mmm-monitor-${cluster_name}":
+      service { $service_name:
         subscribe      => Package[mysql-mmm-monitor],
         enable         => true,
         ensure         => running,
