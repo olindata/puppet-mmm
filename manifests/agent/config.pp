@@ -37,7 +37,7 @@ define mmm::agent::config($localsubnet, $replication_user,
     }
   mariadb::user{ 'debian-sys-maint':
         username        => 'debian-sys-maint',
-        pw              => $::debian-sys-maint-pass,
+        pw              => $mariadb::params::debian_sys_maint_pass,
         dbname          => "*",
         grants          => "ALL PRIVILEGES",
         host_to_grant   => 'localhost', 
