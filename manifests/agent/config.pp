@@ -85,7 +85,8 @@ define mmm::agent::config($localsubnet, $replication_user,
     enable         => true,
     ensure         => running,
     hasrestart     => true,
-    hasstatus      => true 
+    hasstatus      => true,
+    require        => [File["/etc/mysql-mmm/mmm_agent.conf"], File["/etc/mysql-mmm/mmm_common.conf"]] 
   }
   
 }
