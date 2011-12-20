@@ -2,6 +2,8 @@ define mmm::common::config($replication_user, $replication_password, $agent_user
   $agent_password, $cluster_interface, $cluster_name, $master_names, $master_ips, 
   $slave_ips, $masters, $slaves, $readers, $writer_virtual_ip, $reader_virtual_ips) {
   
+  include mmm::params
+  
   case $cluster_name {
     '': {
       file { "/etc/mysql-mmm/mmm_common.conf":
