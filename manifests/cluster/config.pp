@@ -18,8 +18,8 @@
 #   credentials used for mmm monitor
 # monitor_ip           => '127.0.0.1',
 #   IP on which monitor runs from perspective of monitor config, almost always 127.0.0.1
-# masters              => [['master01','192.168.159.x'], ['master02', '192.168.159.y']],
-#   two-dimensional array of masters and their physical ips
+# masters              => [['master01','192.168.159.x', '192.168.159.y'], ['master02', '192.168.159.y', '192.168.159.x']],
+#   two-dimensional array of masters, their physical ip and peer ip
 # slaves            => [['slave01', '192.168.159.z'], ['slave02', '192.168.159.za']],
 #   two-dimensional array of slaves and their physical ips
 # readers          => ['master01', 'master02', 'slave01', 'slave02',''],
@@ -28,6 +28,18 @@
 #   the virtual ip used for the writer
 # reader_virtual_ips   => ['192.168.159.yy','192.168.159.zz',..]
 #   the virtual ip used for the readers
+# localsubnet          => '192.168.159.%'.
+#   the hostname or net, in mysql format, indicating where database connection can orginate from
+# reader_user
+#   the reader user used by the application. This user is created
+# reader_pass
+#   the password for the reader user
+# writer_user
+#   the writer user used by the application. This user is created
+# writer_pass
+#   the password for the writer user
+# mmm_type
+#   'agent' or 'monitor'
 define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $port = '9988', $replication_user, 
   $replication_password, $agent_user, $agent_password, $monitor_user, 
   $monitor_password, $monitor_ip, $masters = [], $slaves = [], $readers = [], 
