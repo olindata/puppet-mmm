@@ -35,15 +35,6 @@ define mmm::agent::config($localsubnet, $replication_user,
         dbhost          => 'localhost', 
         withgrants      => false,
     }
-  mariadb::user{ 'debian-sys-maint':
-        username        => 'debian-sys-maint',
-        pw              => $mariadb::params::debian_sys_maint_pass,
-        dbname          => "*",
-        grants          => "ALL PRIVILEGES",
-        host_to_grant   => 'localhost', 
-        dbhost          => 'localhost', 
-        withgrants      => true
-    }
 
   mariadb::user{ $reader_user:
         username        => $reader_user,
