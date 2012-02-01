@@ -30,9 +30,9 @@
 #   the virtual ip used for the readers
 define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $port = '9988', $replication_user, 
   $replication_password, $agent_user, $agent_password, $monitor_user, 
-  $monitor_password, $monitor_ip, $masters = [], $slaves = [], $readers = [], 
+  $monitor_password, $monitor_ip, $masters, $slaves = [], $readers = [], 
   $writer_virtual_ip, $reader_virtual_ips = [], $localsubnet, 
-  $reader_user, $reader_pass, $writer_user, $writer_pass, $mmm_type) {
+  $reader_user = '', $reader_pass = '', $writer_user, $writer_pass, $mmm_type) {
   
   # massive workaround to get our list of masters in comma separated format
   # Doesn't work with puppet 2.6.2, works with 2.7.6

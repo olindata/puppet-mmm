@@ -35,25 +35,20 @@ define mmm::agent::config($localsubnet, $replication_user,
         dbhost          => 'localhost', 
         withgrants      => false,
     }
-  mariadb::user{ 'debian-sys-maint':
-        username        => 'debian-sys-maint',
-        pw              => $mariadb::params::debian_sys_maint_pass,
-        dbname          => "*",
-        grants          => "ALL PRIVILEGES",
-        host_to_grant   => 'localhost', 
-        dbhost          => 'localhost', 
-        withgrants      => true
-    }
 
-  mariadb::user{ $reader_user:
-        username        => $reader_user,
-        pw              => $reader_pass,
-        dbname          => "*",
-        grants          => "SELECT",
-        host_to_grant   => $localsubnet, 
-        dbhost          => 'localhost', 
-        withgrants      => false
+  # only create reader user if it is specified, on clusters without readers it won't be necessary
+  if ($reader_user != '') { 
+    mariadb::user{ $reader_user:
+      username        => $reader_user,
+      pw              => $reader_pass,
+      dbname          => "*",
+      grants          => "SELECT",
+      host_to_grant   => $localsubnet, 
+      dbhost          => 'localhost', 
+      withgrants      => false
     }
+  }
+
   mariadb::user{ $writer_user:
         username        => $writer_user,
         pw              => $writer_pass,
