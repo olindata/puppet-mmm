@@ -36,15 +36,19 @@ define mmm::agent::config($localsubnet, $replication_user,
         withgrants      => false,
     }
 
-  mariadb::user{ $reader_user:
-        username        => $reader_user,
-        pw              => $reader_pass,
-        dbname          => "*",
-        grants          => "SELECT",
-        host_to_grant   => $localsubnet, 
-        dbhost          => 'localhost', 
-        withgrants      => false
+  # only create reader user if it is specified, on clusters without readers it won't be necessary
+  if ($reader_user != '') { 
+    mariadb::user{ $reader_user:
+      username        => $reader_user,
+      pw              => $reader_pass,
+      dbname          => "*",
+      grants          => "SELECT",
+      host_to_grant   => $localsubnet, 
+      dbhost          => 'localhost', 
+      withgrants      => false
     }
+  }
+
   mariadb::user{ $writer_user:
         username        => $writer_user,
         pw              => $writer_pass,

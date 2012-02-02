@@ -42,9 +42,9 @@
 #   'agent' or 'monitor'
 define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $port = '9988', $replication_user, 
   $replication_password, $agent_user, $agent_password, $monitor_user, 
-  $monitor_password, $monitor_ip, $masters = [], $slaves = [], $readers = [], 
+  $monitor_password, $monitor_ip, $masters, $slaves = [], $readers = [], 
   $writer_virtual_ip, $reader_virtual_ips = [], $localsubnet, 
-  $reader_user, $reader_pass, $writer_user, $writer_pass, $mmm_type) {
+  $reader_user = '', $reader_pass = '', $writer_user, $writer_pass, $mmm_type) {
   
   # $ipaddresses is a custom fact, defined in the mmm module. It greps ifconfig
   # and lists all ipaddresses in a semi-colon separated list
