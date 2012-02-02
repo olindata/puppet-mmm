@@ -21,20 +21,28 @@ active_master_role  writer
   agent_password          <%= scope.lookupvar("agent_password") %>
 </host>
 
-<% scope.lookupvar("masters").each do |master| -%>
-<host <%= master[0] %>>
-  ip            <%= master[1] %>
+<% m = scope.lookupvar("masters").flatten
+   master_names = []
+   host = m.shift(3)
+   while ! host.empty? 
+     master_names << host[0] -%>
+<host <%= host[0] %>>
+  ip            <%= host[1] %>
   mode          master
-  peer          <%= master[2] %>
+  peer          <%= host[2] %>
 </host>
-<% end -%>
+<% host = m.shift(3)
+   end -%>
 
-<% scope.lookupvar("slaves").each do |slave| -%> 
-<host <%= slave[0] %>>
-  ip            <%= slave[1] %>
+<% s = scope.lookupvar("slaves").flatten
+   host = s.shift(2)
+   while ! host.empty? -%> 
+<host <%= host[0] %>>
+  ip            <%= host[1] %>
   mode          slave
 </host>
-<% end -%>
+<% host = s.shift(2)
+   end -%>
 
 <role writer>
   hosts          <%= master_names.flatten.join(', ') %>

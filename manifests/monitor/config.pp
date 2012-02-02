@@ -1,5 +1,5 @@
-define mmm::monitor::config($port, $cluster_name, $monitor_ip, $master_ips, 
-  $slave_ips, $monitor_user, $monitor_password) {
+define mmm::monitor::config($port, $cluster_name, $monitor_ip, $masters, 
+  $slaves, $monitor_user, $monitor_password) {
   
   case $cluster_name {
     '': {

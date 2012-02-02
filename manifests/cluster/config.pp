@@ -18,11 +18,11 @@
 #   credentials used for mmm monitor
 # monitor_ip           => '127.0.0.1',
 #   IP on which monitor runs from perspective of monitor config, almost always 127.0.0.1
-# masters              => [['master01','192.168.159.x', '192.168.159.y'], ['master02', '192.168.159.y', '192.168.159.x']],
+# masters              => [['master01','192.168.159.x', 'master02'], ['master02', '192.168.159.y', 'master01']],
 #   two-dimensional array of masters, their physical ip and peer ip
 # slaves            => [['slave01', '192.168.159.z'], ['slave02', '192.168.159.za']],
 #   two-dimensional array of slaves and their physical ips
-# readers          => ['master01', 'master02', 'slave01', 'slave02',''],
+# readers          => ['master01', 'master02', 'slave01', 'slave02'],
 #   list of nodes that can have reader roles
 # writer_virtual_ip    => '192.168.159.xx',
 #   the virtual ip used for the writer
@@ -46,14 +46,6 @@ define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $po
   $writer_virtual_ip, $reader_virtual_ips = [], $localsubnet, 
   $reader_user, $reader_pass, $writer_user, $writer_pass, $mmm_type) {
   
-  # massive workaround to get our list of masters in comma separated format
-  # Doesn't work with puppet 2.6.2, works with 2.7.6
-  $master_names = [] 
-  $master_ips = []      
-  $slave_ips = []
-  $b = inline_template("<% scope.lookupvar('masters').each do |master| -%><%= master_names.push(master[0]) %><%= master_ips.push(master[1]) %> <% end %>")
-  $c = inline_template("<% scope.lookupvar('slaves').each do |slave| -%><%= slave_ips.push(slave[1]) %> <% end %>")
-    
   # $ipaddresses is a custom fact, defined in the mmm module. It greps ifconfig
   # and lists all ipaddresses in a semi-colon separated list
   $ipadd_array = split($::ipaddresses, ';')
@@ -78,9 +70,6 @@ define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $po
     agent_password       => $agent_password ,
     cluster_interface    => $cluster_interface,
     cluster_name         => $real_cluster_name,
-    master_names         => $master_names,
-    master_ips           => $master_ips,
-    slave_ips            => $slave_ips,
     masters              => $masters,
     slaves               => $slaves,
     readers              => $readers,
@@ -109,8 +98,8 @@ define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $po
         port                 => $port,
         cluster_name         => $real_cluster_name,
         monitor_ip           => $monitor_ip,
-        master_ips           => $master_ips,
-        slave_ips            => $slave_ips,
+        masters              => $masters,
+        slaves               => $slaves,
         monitor_user         => $monitor_user,
         monitor_password     => $monitor_password,
       }

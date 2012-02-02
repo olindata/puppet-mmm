@@ -13,7 +13,7 @@ include mmm_common<% if scope.lookupvar('mmm::params::multi_cluster_monitor') ==
   pid_path        /var/run/mmm_mond<% if scope.lookupvar('mmm::params::multi_cluster_monitor') == true %><% if cluster_name != '' %>_<%= cluster_name %><% end %><% end %>.pid
   bin_path        /usr/lib/mysql-mmm/
   status_path     /var/lib/misc/mmm_mond<% if scope.lookupvar('mmm::params::multi_cluster_monitor') == true %><% if cluster_name != '' %>_<%= cluster_name %><% end %><% end %>.status
-  ping_ips        <%= (master_ips+slave_ips).flatten.join(', ') %>
+  ping_ips        <%= (scope.lookupvar("masters").flatten.take_while{ |i| i % 3 == 1 } + scope.lookupvar("slaves").flatten.take_while{ |i| i % 2 == 1 } ).join(', ') %>
   auto_set_online 60
   <% if cluster_name != '' %>port          <%= port %><% end %>
 </monitor>
