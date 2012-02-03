@@ -31,6 +31,9 @@ define services::s_mmmcommon {
         }
 }
 
+
+Ensure your replicaiton_password is less than 32 characters: http://bugs.mysql.com/bug.php?id=43439
+
 Your dbserver node/class will contain:
 
     services::s_mmmcommon{ 'agent': }
