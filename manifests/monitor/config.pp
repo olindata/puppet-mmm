@@ -20,12 +20,20 @@ define mmm::monitor::config($port, $cluster_name, $monitor_ip, $masters,
         require   => Package["mysql-mmm-monitor"],
       }
       service { 'mysql-mmm-monitor':
-        subscribe      => Package[mysql-mmm-monitor],
+        subscribe      => [
+          Package[mysql-mmm-monitor],
+          File["/etc/mysql-mmm/mmm_mon.conf"],
+          File["/etc/mysql-mmm/mmm_common.conf"]
+        ],
         enable         => true,
         ensure         => running,
         hasrestart     => true,
         hasstatus      => true,
-        require        => Package["mysql-mmm-monitor"]
+        require        => [
+          Package[mysql-mmm-monitor],
+          File["/etc/mysql-mmm/mmm_mon.conf"],
+          File["/etc/mysql-mmm/mmm_common.conf"]
+        ],
       }
     }
     default: {
@@ -82,13 +90,20 @@ define mmm::monitor::config($port, $cluster_name, $monitor_ip, $masters,
         content   => template("mmm/mon-init-d.erb"),
         require   => Package["mysql-mmm-monitor"],
       }
+
       service { $service_name:
-        subscribe      => Package[mysql-mmm-monitor],
+        subscribe      => [
+          Package[mysql-mmm-monitor],
+          File[$mon_dot_conf_name],
+        ],
         enable         => true,
         ensure         => running,
         hasrestart     => true,
         hasstatus      => true,
-        require        => Package["mysql-mmm-monitor"]
+        require        => [
+          Package[mysql-mmm-monitor],
+          File[$mon_dot_conf_name],
+        ],
       }
     }
   }
