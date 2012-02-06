@@ -1,3 +1,15 @@
+define mmm::agent::config::dummyloop($reader_user, $reader_pass) {
+    mariadb::user{ $reader_user:
+      username        => $reader_user,
+      pw              => $reader_pass,
+      dbname          => "*",
+      grants          => "SELECT",
+      host_to_grant   => $name,
+      dbhost          => 'localhost',
+      withgrants      => false
+    }
+}
+
 define mmm::agent::config($localsubnet, $replication_user,
   $replication_password, $agent_user, $agent_password, $monitor_user,
   $monitor_password, $reader_user, $reader_pass, $writer_user, $writer_pass,
@@ -39,14 +51,10 @@ define mmm::agent::config($localsubnet, $replication_user,
 
   # only create reader user if it is specified, on clusters without readers it won't be necessary
   if ($reader_user != '') {
-    mariadb::user{ $reader_user:
-      username        => $reader_user,
-      pw              => $reader_pass,
-      dbname          => "*",
-      grants          => "SELECT",
-      host_to_grant   => $reader_virtual_ips,
-      dbhost          => 'localhost',
-      withgrants      => false
+    # Use a dummy define to iterate through an array of ips
+    mmm::agent::config::dummyloop{$reader_virtual_ips:
+      reader_user => $reader_user,
+      reader_pass => $reader_pass
     }
   }
 
