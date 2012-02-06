@@ -1,5 +1,5 @@
-# With this define, we can configure a whole MMM cluster at once. The different 
-# machines will have this define assigned to them by the rest of the mmm and 
+# With this define, we can configure a whole MMM cluster at once. The different
+# machines will have this define assigned to them by the rest of the mmm and
 # s_mmm module.
 # This define supports multiple clusters on the same MMM monitor node
 
@@ -40,18 +40,18 @@
 #   the password for the writer user
 # mmm_type
 #   'agent' or 'monitor'
-define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $port = '9988', $replication_user, 
-  $replication_password, $agent_user, $agent_password, $monitor_user, 
-  $monitor_password, $monitor_ip, $masters, $slaves = [], $readers = [], 
-  $writer_virtual_ip, $reader_virtual_ips = [], $localsubnet, 
+define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $port = '9988', $replication_user,
+  $replication_password, $agent_user, $agent_password, $monitor_user,
+  $monitor_password, $monitor_ip, $masters, $slaves = [], $readers = [],
+  $writer_virtual_ip, $reader_virtual_ips = [], $localsubnet,
   $reader_user = '', $reader_pass = '', $writer_user, $writer_pass, $mmm_type) {
-  
+
   # $ipaddresses is a custom fact, defined in the mmm module. It greps ifconfig
   # and lists all ipaddresses in a semi-colon separated list
   $ipadd_array = split($::ipaddresses, ';')
 
-  # bad way to get the mmm::common::config to create a non-renamed config 
-  # file when this is an agent node (on an agent node there is no need to be 
+  # bad way to get the mmm::common::config to create a non-renamed config
+  # file when this is an agent node (on an agent node there is no need to be
   # aware of multiple clusters as an agent is always only part of one cluster)
   if $mmm_type == 'agent' {
     $real_cluster_name = ''
@@ -59,10 +59,10 @@ define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $po
     $real_cluster_name = $cluster_name
   }
 
-  # This takes care of the configuration part for mmm::common. Note that this 
-  # has been separated from the class that installs mmm::common, since when 
-  # there are multiple clusters this define is called multiple times, and 
-  # pupept doesnt allow to specify resources multiple times 
+  # This takes care of the configuration part for mmm::common. Note that this
+  # has been separated from the class that installs mmm::common, since when
+  # there are multiple clusters this define is called multiple times, and
+  # pupept doesnt allow to specify resources multiple times
   mmm::common::config{ $name:
     replication_user     => $replication_user,
     replication_password => $replication_password,
@@ -78,7 +78,7 @@ define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $po
   }
 
   case $mmm_type {
-    'agent': {      
+    'agent': {
       mmm::agent::config{ $name:
         localsubnet          => $localsubnet,
         replication_user     => $replication_user,
@@ -87,10 +87,12 @@ define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $po
         agent_password       => $agent_password,
         monitor_user         => $monitor_user,
         monitor_password     => $monitor_password,
-        reader_user          => $reader_user, 
+        reader_user          => $reader_user,
         reader_pass          => $reader_pass,
-        writer_user          => $writer_user,      
+        writer_user          => $writer_user,
         writer_pass          => $writer_user,
+        writer_virtual_ip    => $writer_virtual_ip,
+        reader_virtual_ips   => $reader_virtual_ips,
       }
     }
     'monitor': {
@@ -106,5 +108,5 @@ define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $po
     }
     default: { err("No ${mmm_type} defined for this node") }
   }
-  
+
 }

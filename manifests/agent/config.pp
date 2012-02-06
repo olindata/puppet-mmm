@@ -1,6 +1,7 @@
 define mmm::agent::config($localsubnet, $replication_user,
   $replication_password, $agent_user, $agent_password, $monitor_user,
-  $monitor_password, $reader_user, $reader_pass, $writer_user, $writer_pass) {
+  $monitor_password, $reader_user, $reader_pass, $writer_user, $writer_pass,
+  $writer_virtual_ip, $reader_virtual_ips) {
 
   # GRANT REPLICATION CLIENT                 ON *.* TO 'mmm_monitor'@'192.168.%' IDENTIFIED BY 'monitor_password';
   # GRANT SUPER, REPLICATION CLIENT, PROCESS ON *.* TO 'mmm_agent'@'192.168.%'   IDENTIFIED BY 'agent_password';
@@ -43,7 +44,7 @@ define mmm::agent::config($localsubnet, $replication_user,
       pw              => $reader_pass,
       dbname          => "*",
       grants          => "SELECT",
-      host_to_grant   => $localsubnet,
+      host_to_grant   => $reader_virtual_ips,
       dbhost          => 'localhost',
       withgrants      => false
     }
@@ -54,7 +55,7 @@ define mmm::agent::config($localsubnet, $replication_user,
         pw              => $writer_pass,
         dbname          => "*",
         grants          => "SELECT, UPDATE, INSERT, DELETE",
-        host_to_grant   => $localsubnet,
+        host_to_grant   => $writer_virtual_ip,
         dbhost          => 'localhost',
         withgrants      => false
     }
@@ -67,6 +68,7 @@ define mmm::agent::config($localsubnet, $replication_user,
     content   => template("mmm/mmm_agent.conf.erb"),
     require   => Package["mysql-mmm-agent"],
   }
+
   file { "/etc/init.d/mysql-mmm-agent":
     ensure  => present,
     mode  => 0755,
@@ -75,6 +77,7 @@ define mmm::agent::config($localsubnet, $replication_user,
     content   => template("mmm/agent-init-d.erb"),
     require   => Package["mysql-mmm-agent"],
   }
+
   service { 'mysql-mmm-agent':
     ensure         => running,
     subscribe      => [
