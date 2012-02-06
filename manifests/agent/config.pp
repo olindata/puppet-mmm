@@ -1,5 +1,5 @@
 define mmm::agent::config::dummyloop($reader_user, $reader_pass) {
-    mariadb::user{ $reader_user:
+    mariadb::user{ "mariadb_user_${name}_${reader_user}":
       username        => $reader_user,
       pw              => $reader_pass,
       dbname          => "*",
