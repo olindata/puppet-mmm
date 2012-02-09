@@ -90,7 +90,7 @@ define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $po
         reader_user          => $reader_user,
         reader_pass          => $reader_pass,
         writer_user          => $writer_user,
-        writer_pass          => $writer_user,
+        writer_pass          => $writer_pass,
         writer_virtual_ip    => $writer_virtual_ip,
         reader_virtual_ips   => $reader_virtual_ips,
       }
