@@ -1,14 +1,3 @@
-define mmm::agent::config::dummyloop($reader_user, $reader_pass) {
-    mariadb::user{ "mariadb_user_${name}_${reader_user}":
-      username        => $reader_user,
-      pw              => $reader_pass,
-      dbname          => "*",
-      grants          => "SELECT",
-      host_to_grant   => $name,
-      dbhost          => 'localhost',
-      withgrants      => false
-    }
-}
 
 define mmm::agent::config($localsubnet, $replication_user,
   $replication_password, $agent_user, $agent_password, $monitor_user,
@@ -51,22 +40,26 @@ define mmm::agent::config($localsubnet, $replication_user,
 
   # only create reader user if it is specified, on clusters without readers it won't be necessary
   if ($reader_user != '') {
-    # Use a dummy define to iterate through an array of ips
-    mmm::agent::config::dummyloop{$reader_virtual_ips:
-      reader_user => $reader_user,
-      reader_pass => $reader_pass
+    mariadb::user{ "mariadb_user_${name}_${localsubnet}":
+      username        => $reader_user,
+      pw              => $reader_pass,
+      dbname          => "*",
+      grants          => "SELECT",
+      host_to_grant   => $localsubnet,
+      dbhost          => 'localhost',
+      withgrants      => false
     }
   }
 
-  mariadb::user{ $writer_user:
-        username        => $writer_user,
-        pw              => $writer_pass,
-        dbname          => "*",
-        grants          => "SELECT, UPDATE, INSERT, DELETE",
-        host_to_grant   => $writer_virtual_ip,
-        dbhost          => 'localhost',
-        withgrants      => false
-    }
+  mariadb::user{ "mariadb_user_${writer_user}_${localsubnet}":
+    username        => $writer_user,
+    pw              => $writer_pass,
+    dbname          => "*",
+    grants          => "SELECT, UPDATE, INSERT, DELETE",
+    host_to_grant   => $localsubnet,
+    dbhost          => 'localhost',
+    withgrants      => false
+  }
 
   file { "/etc/mysql-mmm/mmm_agent.conf":
     ensure  => present,
