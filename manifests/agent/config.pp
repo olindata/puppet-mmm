@@ -11,42 +11,42 @@ define mmm::agent::config($localsubnet, $replication_user,
   include mmm::params
 
   mariadb::user{ $replication_user:
-        username        => $replication_user,
-        pw              => $replication_password,
-        dbname          => "*",
-        grants          => "REPLICATION SLAVE",
-        host_to_grant   => $localsubnet,
-        dbhost          => 'localhost',
-        withgrants      => false,
-    }
+    username        => $replication_user,
+    pw              => $replication_password,
+    dbname          => '*',
+    grants          => 'REPLICATION SLAVE',
+    host_to_grant   => $localsubnet,
+    dbhost          => 'localhost',
+    withgrants      => false,
+  }
 
   mariadb::user{ $agent_user:
-        username        => $agent_user,
-        pw              => $agent_password,
-        dbname          => "*",
-        grants          => "SUPER, REPLICATION CLIENT, PROCESS",
-        host_to_grant   => $localsubnet,
-        dbhost          => 'localhost',
-        withgrants      => false,
-    }
+    username        => $agent_user,
+    pw              => $agent_password,
+    dbname          => '*',
+    grants          => 'SUPER, REPLICATION CLIENT, PROCESS',
+    host_to_grant   => $localsubnet,
+    dbhost          => 'localhost',
+    withgrants      => false,
+  }
 
   mariadb::user{ $monitor_user:
-        username        => $monitor_user,
-        pw              => $monitor_password,
-        dbname          => "*",
-        grants          => "REPLICATION CLIENT",
-        host_to_grant   => $localsubnet,
-        dbhost          => 'localhost',
-        withgrants      => false,
-    }
+    username        => $monitor_user,
+    pw              => $monitor_password,
+    dbname          => '*',
+    grants          => 'REPLICATION CLIENT',
+    host_to_grant   => $localsubnet,
+    dbhost          => 'localhost',
+    withgrants      => false,
+  }
 
   # only create reader user if it is specified, on clusters without readers it won't be necessary
   if ($reader_user != '') {
     mariadb::user{ "mariadb_user_${name}_${localsubnet}":
       username        => $reader_user,
       pw              => $reader_pass,
-      dbname          => "*",
-      grants          => "SELECT",
+      dbname          => '*',
+      grants          => 'SELECT',
       host_to_grant   => $localsubnet,
       dbhost          => 'localhost',
       withgrants      => false
@@ -56,45 +56,45 @@ define mmm::agent::config($localsubnet, $replication_user,
   mariadb::user{ "mariadb_user_${writer_user}_${localsubnet}":
     username        => $writer_user,
     pw              => $writer_pass,
-    dbname          => "*",
-    grants          => "SELECT, UPDATE, INSERT, DELETE",
+    dbname          => '*',
+    grants          => 'SELECT, UPDATE, INSERT, DELETE',
     host_to_grant   => $localsubnet,
     dbhost          => 'localhost',
     withgrants      => false
   }
 
-  file { "/etc/mysql-mmm/mmm_agent.conf":
+  file { '/etc/mysql-mmm/mmm_agent.conf':
     ensure  => present,
-    mode  => 0600,
-    owner  => "root",
-    group  => "root",
-    content   => template("mmm/mmm_agent.conf.erb"),
-    require   => Package["mysql-mmm-agent"],
+    mode    => 0600,
+    owner   => 'root',
+    group   => 'root',
+    content => template('mmm/mmm_agent.conf.erb'),
+    require => Package['mysql-mmm-agent'],
   }
 
-  file { "/etc/init.d/mysql-mmm-agent":
+  file { '/etc/init.d/mysql-mmm-agent':
     ensure  => present,
-    mode  => 0755,
-    owner  => "root",
-    group  => "root",
-    content   => template("mmm/agent-init-d.erb"),
-    require   => Package["mysql-mmm-agent"],
+    mode    => 0755,
+    owner   => 'root',
+    group   => 'root',
+    content => template('mmm/agent-init-d.erb'),
+    require => Package['mysql-mmm-agent'],
   }
 
   service { 'mysql-mmm-agent':
     ensure         => running,
     subscribe      => [
       Package[mysql-mmm-agent],
-      File["/etc/mysql-mmm/mmm_agent.conf"],
-      File["/etc/mysql-mmm/mmm_common.conf"]
+      File['/etc/mysql-mmm/mmm_agent.conf'],
+      File['/etc/mysql-mmm/mmm_common.conf']
     ],
     enable         => true,
     hasrestart     => true,
     hasstatus      => true,
     require        => [
       Package[mysql-mmm-agent],
-      File["/etc/mysql-mmm/mmm_agent.conf"],
-      File["/etc/mysql-mmm/mmm_common.conf"]
+      File['/etc/mysql-mmm/mmm_agent.conf'],
+      File['/etc/mysql-mmm/mmm_common.conf']
     ]
   }
 

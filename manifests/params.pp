@@ -9,7 +9,7 @@ class mmm::params {
   ## Example: $::mmm_multi_cluster_monitor = TRUE
   $multi_cluster_monitor = $::mmm_multi_cluster_monitor ? {
     ''      => FALSE,
-    default => "${::mmm_multi_cluster_monitor}",
+    default => $::mmm_multi_cluster_monitor,
   }
   
 }

@@ -6,13 +6,13 @@ define mmm::common::config($replication_user, $replication_password, $agent_user
   
   case $cluster_name {
     '': {
-      file { "/etc/mysql-mmm/mmm_common.conf":
+      file { '/etc/mysql-mmm/mmm_common.conf':
         ensure  => present,
-        mode  => 0600,
-        owner  => "root",
-        group  => "root",
-        content   => template("mmm/mmm_common.conf.erb"),
-        require   => Package["mysql-mmm-common"],
+        mode    => 0600,
+        owner   => 'root',
+        group   => 'root',
+        content => template('mmm/mmm_common.conf.erb'),
+        require => Package['mysql-mmm-common'],
       }
     }
     default: {
@@ -23,25 +23,25 @@ define mmm::common::config($replication_user, $replication_password, $agent_user
         # are multiple clusters on one monitor, we need to check here to 
         # make sure we don't double-define the normal common file to be 
         # excluded
-        if defined(File["/etc/mysql-mmm/mmm_common.conf"]) {
-          notice("/etc/mysql-mmm/mmm_common.conf already defined, skipping in module mmm:common::config")
+        if defined(File['/etc/mysql-mmm/mmm_common.conf']) {
+          notice('/etc/mysql-mmm/mmm_common.conf already defined, skipping in module mmm:common::config')
         } else {
-          file { "/etc/mysql-mmm/mmm_common.conf":
+          file { '/etc/mysql-mmm/mmm_common.conf':
             ensure  => absent,
           }
         }
 
       } else {
-        $common_dot_conf_name = "/etc/mysql-mmm/mmm_common.conf"
+        $common_dot_conf_name = '/etc/mysql-mmm/mmm_common.conf'
       }
       
       file { $common_dot_conf_name:
         ensure  => present,
-        mode  => 0600,
-        owner  => "root",
-        group  => "root",
-        content   => template("mmm/mmm_common.conf.erb"),
-        require   => Package["mysql-mmm-common"],
+        mode    => 0600,
+        owner   => 'root',
+        group   => 'root',
+        content => template('mmm/mmm_common.conf.erb'),
+        require => Package['mysql-mmm-common'],
       }
     }
   }
