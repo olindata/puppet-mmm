@@ -46,6 +46,8 @@ define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $po
   $writer_virtual_ip, $reader_virtual_ips = [], $localsubnet,
   $reader_user = '', $reader_pass = '', $writer_user, $writer_pass, $mmm_type) {
 
+  include mmm::params
+
   # $ipaddresses is a custom fact, defined in the mmm module. It greps ifconfig
   # and lists all ipaddresses in a semi-colon separated list
   $ipadd_array = split($::ipaddresses, ';')

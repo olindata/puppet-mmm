@@ -1,5 +1,7 @@
 class mmm::monitor {
   
+  include mmm::params
+  
   include mmm::common
   
   package { "mysql-mmm-monitor":

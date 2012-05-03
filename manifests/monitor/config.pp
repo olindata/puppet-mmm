@@ -1,6 +1,8 @@
 define mmm::monitor::config($port, $cluster_name, $monitor_ip, $masters,
   $slaves, $monitor_user, $monitor_password) {
 
+  include mmm::params
+
   case $cluster_name {
     '': {
       file { "/etc/mysql-mmm/mmm_mon.conf":

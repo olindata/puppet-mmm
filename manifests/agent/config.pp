@@ -8,6 +8,8 @@ define mmm::agent::config($localsubnet, $replication_user,
   # GRANT SUPER, REPLICATION CLIENT, PROCESS ON *.* TO 'mmm_agent'@'192.168.%'   IDENTIFIED BY 'agent_password';
   # GRANT REPLICATION SLAVE                  ON *.* TO 'replication'@'192.168.%' IDENTIFIED BY 'replication_password';
 
+  include mmm::params
+
   mariadb::user{ $replication_user:
         username        => $replication_user,
         pw              => $replication_password,

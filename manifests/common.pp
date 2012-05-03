@@ -1,6 +1,8 @@
 class mmm::common {
   
-  package { "mysql-mmm-common":
+  include mmm::params
+
+  package { 'mysql-mmm-common':
     ensure => 'present'
   }
 
