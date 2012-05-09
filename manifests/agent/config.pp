@@ -57,7 +57,7 @@ define mmm::agent::config($localsubnet, $replication_user,
     username        => $writer_user,
     pw              => $writer_pass,
     dbname          => '*',
-    grants          => 'SELECT, UPDATE, INSERT, DELETE',
+    grants          => 'SELECT, UPDATE, INSERT, DELETE, CREATE, ALTER, DROP',
     host_to_grant   => $localsubnet,
     dbhost          => 'localhost',
     withgrants      => false
