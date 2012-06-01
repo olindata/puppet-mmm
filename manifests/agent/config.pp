@@ -4,63 +4,50 @@ define mmm::agent::config($localsubnet, $replication_user,
   $monitor_password, $reader_user, $reader_pass, $writer_user, $writer_pass,
   $writer_virtual_ip, $reader_virtual_ips) {
 
-  # GRANT REPLICATION CLIENT                 ON *.* TO 'mmm_monitor'@'192.168.%' IDENTIFIED BY 'monitor_password';
-  # GRANT SUPER, REPLICATION CLIENT, PROCESS ON *.* TO 'mmm_agent'@'192.168.%'   IDENTIFIED BY 'agent_password';
-  # GRANT REPLICATION SLAVE                  ON *.* TO 'replication'@'192.168.%' IDENTIFIED BY 'replication_password';
-
   include mmm::params
 
-  mariadb::user{ $replication_user:
-    username        => $replication_user,
-    pw              => $replication_password,
-    dbname          => '*',
-    grants          => 'REPLICATION SLAVE',
-    host_to_grant   => $localsubnet,
-    dbhost          => 'localhost',
-    withgrants      => false,
+  database_user{ $replication_user:
+    name          => "${replication_user}@${localsubnet}",
+    password_hash => mysql_password($replication_password),
+  }
+  database_grant{ "${replication_user}@${localsubnet}":
+    privileges => ['repl_slave_priv']
   }
 
-  mariadb::user{ $agent_user:
-    username        => $agent_user,
-    pw              => $agent_password,
-    dbname          => '*',
-    grants          => 'SUPER, REPLICATION CLIENT, PROCESS',
-    host_to_grant   => $localsubnet,
-    dbhost          => 'localhost',
-    withgrants      => false,
+
+  database_user{ $agent_user:
+    name          => "${agent_user}@${localsubnet}",
+    password_hash => mysql_password($agent_password),
+  }
+  database_grant{ "${agent_user}@${localsubnet}":
+    privileges => ['repl_client_priv', 'super_priv', 'process_priv']
   }
 
-  mariadb::user{ $monitor_user:
-    username        => $monitor_user,
-    pw              => $monitor_password,
-    dbname          => '*',
-    grants          => 'REPLICATION CLIENT',
-    host_to_grant   => $localsubnet,
-    dbhost          => 'localhost',
-    withgrants      => false,
+  database_user{ $monitor_user:
+    name          => "${monitor_user}@${localsubnet}",
+    password_hash => mysql_password($monitor_password),
+  }
+  database_grant{ "${monitor_user}@${localsubnet}":
+    privileges => ['repl_client_priv']
   }
 
   # only create reader user if it is specified, on clusters without readers it won't be necessary
   if ($reader_user != '') {
-    mariadb::user{ "mariadb_user_${name}_${localsubnet}":
-      username        => $reader_user,
-      pw              => $reader_pass,
-      dbname          => '*',
-      grants          => 'SELECT',
-      host_to_grant   => $localsubnet,
-      dbhost          => 'localhost',
-      withgrants      => false
+    database_user{ $reader_user:
+      name          => "${reader_user}@${localsubnet}",
+      password_hash => mysql_password($reader_pass),
+    }
+    database_grant{ "${reader_user}@${localsubnet}":
+      privileges => ['select_priv']
     }
   }
 
-  mariadb::user{ "mariadb_user_${writer_user}_${localsubnet}":
-    username        => $writer_user,
-    pw              => $writer_pass,
-    dbname          => '*',
-    grants          => 'SELECT, UPDATE, INSERT, DELETE',
-    host_to_grant   => $localsubnet,
-    dbhost          => 'localhost',
-    withgrants      => false
+  database_user{ $writer_user:
+    name          => "${writer_user}@${localsubnet}",
+    password_hash => mysql_password($writer_pass),
+  }
+  database_grant{ "${writer_user}@${localsubnet}":
+    privileges => ['select_priv', 'update_priv', 'insert_priv', 'delete_priv', 'create_priv', 'alter_priv', 'drop_priv']
   }
 
   file { '/etc/mysql-mmm/mmm_agent.conf':
