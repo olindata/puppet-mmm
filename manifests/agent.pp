@@ -1,7 +1,7 @@
 class mmm::agent {
 
   include mmm::params
-  
+
   include mmm::common
 
   package { 'mysql-mmm-agent':
@@ -25,5 +25,5 @@ class mmm::agent {
   }
 
 
-  include mariadb::server
+  include mysql::server
 }
