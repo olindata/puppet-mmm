@@ -6,13 +6,15 @@ define mmm::common::config($replication_user, $replication_password, $agent_user
   
   case $cluster_name {
     '': {
-      file { '/etc/mysql-mmm/mmm_common.conf':
-        ensure  => present,
-        mode    => 0600,
-        owner   => 'root',
-        group   => 'root',
-        content => template('mmm/mmm_common.conf.erb'),
-        require => Package['mysql-mmm-common'],
+      if !defined(File['/etc/mysql-mmm/mmm_common.conf']) {
+        file { '/etc/mysql-mmm/mmm_common.conf':
+          ensure  => present,
+          mode    => 0600,
+          owner   => 'root',
+          group   => 'root',
+          content => template('mmm/mmm_common.conf.erb'),
+          require => Package['mysql-mmm-common'],
+        }
       }
     }
     default: {

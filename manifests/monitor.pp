@@ -8,13 +8,16 @@ class mmm::monitor {
     ensure => installed
   }
   
-  file { '/etc/mysql-mmm':
-    ensure  => 'directory',
-    mode    => 0755,
-    owner   => 'root', 
-    group   => 'root',
-    
+  if !defined(File['/etc/mysql-mmm']) {
+    file { '/etc/mysql-mmm':
+      ensure  => 'directory',
+      mode    => 0755,
+      owner   => 'root', 
+      group   => 'root',
+      
+    }
   }
+
   file { '/etc/default/mysql-mmm-monitor':
     ensure  => present,
     mode    => 0644,
