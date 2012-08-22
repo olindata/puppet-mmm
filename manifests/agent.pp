@@ -8,13 +8,16 @@ class mmm::agent {
     ensure  => 'present'
   }
 
-  file { '/etc/mysql-mmm':
-    ensure => 'directory',
-    mode   => 0755,
-    owner  => 'root',
-    group  => 'root',
-    purge  => true,
+  if !defined(File['/etc/mysql-mmm']) {
+    file { '/etc/mysql-mmm':
+      ensure => 'directory',
+      mode   => 0755,
+      owner  => 'root',
+      group  => 'root',
+      purge  => true,
+    }
   }
+
   file { '/etc/default/mysql-mmm-agent':
     ensure  => present,
     mode    => 0644,

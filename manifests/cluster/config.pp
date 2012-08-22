@@ -44,7 +44,8 @@ define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $po
   $replication_password, $agent_user, $agent_password, $monitor_user,
   $monitor_password, $monitor_ip, $masters, $slaves = [], $readers = [],
   $writer_virtual_ip, $reader_virtual_ips = [], $localsubnet,
-  $reader_user = '', $reader_pass = '', $writer_user, $writer_pass, $mmm_type) {
+  $reader_user = '', $reader_pass = '', $writer_user, $writer_pass, $mmm_type,
+  $server_id = '', $num_servers = '', $peer = '') {
 
   include mmm::params
 
@@ -95,7 +96,11 @@ define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $po
         writer_pass          => $writer_pass,
         writer_virtual_ip    => $writer_virtual_ip,
         reader_virtual_ips   => $reader_virtual_ips,
+        server_id            => $server_id,
+        num_servers          => $num_servers,
+        peer                 => $peer,
       }
+      include mmm::agent
     }
     'monitor': {
       mmm::monitor::config{ $name:
@@ -107,6 +112,7 @@ define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $po
         monitor_user         => $monitor_user,
         monitor_password     => $monitor_password,
       }
+      include mmm::monitor
     }
     default: { err("No ${mmm_type} defined for this node") }
   }
