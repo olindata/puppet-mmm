@@ -5,15 +5,17 @@ class mmm::agent {
   include mmm::common
 
   package { 'mysql-mmm-agent':
-    ensure  => 'present'
+    ensure  => 'present',
+    require => Package['mysql-server']
   }
 
   file { '/etc/mysql-mmm':
-    ensure => 'directory',
-    mode   => 0755,
-    owner  => 'root',
-    group  => 'root',
-    purge  => true,
+    ensure  => 'directory',
+    mode    => 0755,
+    owner   => 'root',
+    group   => 'root',
+    require => Package['mysql-mmm-agent'],
+    purge   => true,
   }
   file { '/etc/default/mysql-mmm-agent':
     ensure  => present,
