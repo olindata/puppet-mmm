@@ -23,12 +23,14 @@ define mmm::agent::config($localsubnet, $replication_user,
     privileges => ['repl_client_priv', 'super_priv', 'process_priv']
   }
 
-  database_user{ $monitor_user:
-    name          => "${monitor_user}@${localsubnet}",
-    password_hash => mysql_password($monitor_password),
-  }
-  database_grant{ "${monitor_user}@${localsubnet}":
-    privileges => ['repl_client_priv']
+  if ($monitor_user != $agent_user) {
+    database_user{ $monitor_user:
+      name          => "${monitor_user}@${localsubnet}",
+      password_hash => mysql_password($monitor_password),
+    }
+    database_grant{ "${monitor_user}@${localsubnet}":
+      privileges => ['repl_client_priv']
+    }
   }
 
   # only create reader user if it is specified, on clusters without readers it won't be necessary
