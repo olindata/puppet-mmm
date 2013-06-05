@@ -1,20 +1,9 @@
-class mmm::monitor {
-  
-  include mmm::params
-  
-  include mmm::common
-  
+class mmm::monitor inherits mmm::params {
+   
   package { 'mysql-mmm-monitor':
     ensure => installed
   }
   
-  file { '/etc/mysql-mmm':
-    ensure  => 'directory',
-    mode    => 0755,
-    owner   => 'root', 
-    group   => 'root',
-    
-  }
   file { '/etc/default/mysql-mmm-monitor':
     ensure  => present,
     mode    => 0644,
