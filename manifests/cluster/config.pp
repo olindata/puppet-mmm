@@ -40,12 +40,30 @@
 #   the password for the writer user
 # mmm_type
 #   'agent' or 'monitor'
-define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $port = '9988', $replication_user,
-  $replication_password, $agent_user, $agent_password, $monitor_user,
-  $monitor_password, $monitor_ip, $masters, $slaves = [], $readers = [],
-  $writer_virtual_ip, $reader_virtual_ips = [], $localsubnet,
-  $reader_user = '', $reader_pass = '', $writer_user, $writer_pass, $mmm_type) {
-
+define mmm::cluster::config(
+  $ensure,
+  $cluster_interface,
+  $cluster_name = $name,
+  $port = '9988',
+  $replication_user = 'repl',
+  $replication_password = '',
+  $agent_user = 'mmm_agent',
+  $agent_password = '',
+  $monitor_user = 'mmm_monitor',
+  $monitor_password = '',
+  $monitor_ip = '127.0.0.1',
+  $masters,
+  $slaves = [],
+  $readers = [],
+  $writer_virtual_ip,
+  $reader_virtual_ips = [],
+  $localsubnet,
+  $reader_user = '',
+  $reader_pass = '',
+  $writer_user,
+  $writer_pass,
+  $mmm_type
+) {
   include mmm::params
 
   # $ipaddresses is a custom fact, defined in the mmm module. It greps ifconfig
@@ -110,5 +128,4 @@ define mmm::cluster::config($ensure, $cluster_interface, $cluster_name = '', $po
     }
     default: { err("No ${mmm_type} defined for this node") }
   }
-
 }

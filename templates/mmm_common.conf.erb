@@ -9,19 +9,19 @@
 active_master_role  writer
 
 <host default>
-  cluster_interface       <%= scope.lookupvar("cluster_interface") %>
+  cluster_interface       <%= cluster_interface %>
 
   pid_path                /var/run/mmm_agentd.pid
   bin_path                /usr/lib/mysql-mmm/
 
-  replication_user        <%= scope.lookupvar("replication_user") %>
-  replication_password    <%= scope.lookupvar("replication_password") %>
+  replication_user        <%= replication_user %>
+  replication_password    <%= replication_password %>
 
-  agent_user              <%= scope.lookupvar("agent_user") %>
-  agent_password          <%= scope.lookupvar("agent_password") %>
+  agent_user              <%= agent_user %>
+  agent_password          <%= agent_password %>
 </host>
 
-<% m = scope.lookupvar("masters").flatten
+<% m = masters.flatten
    master_names = []
    host = m.shift(3)
    while ! host.empty? 
@@ -34,7 +34,7 @@ active_master_role  writer
 <% host = m.shift(3)
    end -%>
 
-<% s = scope.lookupvar("slaves").flatten
+<% s = slaves.flatten
    host = s.shift(2)
    while ! host.empty? -%> 
 <host <%= host[0] %>>
@@ -46,11 +46,11 @@ active_master_role  writer
 
 <role writer>
   hosts          <%= master_names.flatten.join(', ') %>
-  ips            <%= scope.lookupvar("writer_virtual_ip") %>
+  ips            <%= writer_virtual_ip %>
   mode           exclusive
 </role>
 
-<% if scope.lookupvar("readers") != [] %>
+<% if readers != [] %>
 <role reader>
   hosts          <%= readers.flatten.join(', ') %>
   ips            <%= reader_virtual_ips.flatten.join(', ') %>

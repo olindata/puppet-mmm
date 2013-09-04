@@ -7,9 +7,13 @@
 # Puppet.  If you really want to change the contents      #
 # repository and check it out on the puppet server.       #
 ###########################################################
+<%
+  multi_cluster_monitor = scope.lookupvar('mmm::params::multi_cluster_monitor')
+  h_cluster_name        = multi_cluster_monitor ? "_#{@cluster_name}" : ''
+-%>
 
 ### BEGIN INIT INFO
-# Provides:          mmm_mond<% if scope.lookupvar('mmm::params::multi_cluster_monitor') == true %><% if cluster_name != '' %>_<%= cluster_name %><% end %><% end %>
+# Provides:          mmm_mond<%= h_cluster_name %>
 # Required-Start:    $network $remote_fs $syslog
 # Required-Stop:     $network $remote_fs $syslog
 # Default-Start:     2 3 4 5
@@ -23,9 +27,9 @@ set -e
 . /lib/lsb/init-functions
 
 # Cluster name (it can be empty for default cases)
-CLUSTER='<% if scope.lookupvar('mmm::params::multi_cluster_monitor') == true %><% if cluster_name != '' %><%= cluster_name %><% end %><% end %>'
+CLUSTER='<% if multi_cluster_monitor != '' %><%= cluster_name %><% end %>'
 
-DESC='MMM Monitoring Daemon<% if scope.lookupvar('mmm::params::multi_cluster_monitor') == true %><% if cluster_name != '' %> for cluster <%= cluster_name %><% end %><% end %>'
+DESC='MMM Monitoring Daemon<% if multi_cluster_monitor != '' %> for cluster <%= cluster_name %><% end %>'
 NAME='mmm_mond'
 PIDFILE='/var/run/mmm_mond.pid'
 DAEMON='/usr/sbin/mmm_mond'

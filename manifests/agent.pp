@@ -1,7 +1,6 @@
 class mmm::agent {
-
+  include mysql::server
   include mmm::params
-
   include mmm::common
 
   package { 'mysql-mmm-agent':
@@ -9,23 +8,21 @@ class mmm::agent {
     require => Package['mysql-server']
   }
 
-  file { '/etc/mysql-mmm':
-    ensure  => 'directory',
-    mode    => 0755,
+  File {
     owner   => 'root',
     group   => 'root',
     require => Package['mysql-mmm-agent'],
+  }
+
+  file { '/etc/mysql-mmm':
+    ensure  => directory,
+    mode    => 0755,
     purge   => true,
   }
+
   file { '/etc/default/mysql-mmm-agent':
     ensure  => present,
     mode    => 0644,
-    owner   => 'root',
-    group   => 'root',
     content => template('mmm/agent-default.erb'),
-    require => Package['mysql-mmm-agent'],
   }
-
-
-  include mysql::server
 }

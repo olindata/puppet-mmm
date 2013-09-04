@@ -1,5 +1,4 @@
 class mmm::params {
-  
 ## DEFAULTS FOR VARIABLES USERS CAN SET
 # (Here are set the defaults, provide your custom variables externally)
 # (The default used is in the line with '')
@@ -11,5 +10,4 @@ class mmm::params {
     ''      => FALSE,
     default => $::mmm_multi_cluster_monitor,
   }
-  
 }

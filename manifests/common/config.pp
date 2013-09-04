@@ -1,7 +1,16 @@
-define mmm::common::config($replication_user, $replication_password, $agent_user, 
-  $agent_password, $cluster_interface, $cluster_name,
-  $masters, $slaves, $readers, $writer_virtual_ip, $reader_virtual_ips) {
-  
+define mmm::common::config(
+  $replication_user,
+  $replication_password,
+  $agent_user,
+  $agent_password,
+  $cluster_interface,
+  $cluster_name,
+  $masters,
+  $slaves,
+  $readers,
+  $writer_virtual_ip,
+  $reader_virtual_ips
+) {
   include mmm::params
   
   case $cluster_name {
@@ -45,5 +54,4 @@ define mmm::common::config($replication_user, $replication_password, $agent_user
       }
     }
   }
-  
 }
