@@ -1,7 +1,11 @@
-class mmm::agent {
+class mmm::agent(
+  $enabled = true
+) {
   include mysql::server
   include mmm::params
   include mmm::common
+
+  validate_bool($enabled)
 
   package { 'mysql-mmm-agent':
     ensure  => 'present',

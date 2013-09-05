@@ -1,6 +1,10 @@
-class mmm::monitor {
+class mmm::monitor(
+  $enabled = true
+){
   include mmm::params
   include mmm::common
+
+  validate_bool($enabled)
 
   File {
     owner   => 'root',

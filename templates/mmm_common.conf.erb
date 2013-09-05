@@ -21,39 +21,35 @@ active_master_role  writer
   agent_password          <%= agent_password %>
 </host>
 
-<% m = masters.flatten
-   master_names = []
-   host = m.shift(3)
-   while ! host.empty? 
-     master_names << host[0] -%>
-<host <%= host[0] %>>
-  ip            <%= host[1] %>
+<%
+  master_names = []
+  masters.each do |master|
+    master_names << master["host"]
+-%>
+<host <%= master["host"] %>>
+  ip            <%= master["ip"] %>
   mode          master
-  peer          <%= host[2] %>
+  peer          <%= master["peer"] %>
 </host>
-<% host = m.shift(3)
-   end -%>
+<% end -%>
 
-<% s = slaves.flatten
-   host = s.shift(2)
-   while ! host.empty? -%> 
-<host <%= host[0] %>>
-  ip            <%= host[1] %>
+<% slaves.each do |slave| -%>
+<host <%= slave["host"] %>>
+  ip            <%= slave["ip"] %>
   mode          slave
 </host>
-<% host = s.shift(2)
-   end -%>
+<% end -%>
 
 <role writer>
-  hosts          <%= master_names.flatten.join(', ') %>
+  hosts          <%= master_names.join(', ') %>
   ips            <%= writer_virtual_ip %>
   mode           exclusive
 </role>
 
 <% if readers != [] %>
 <role reader>
-  hosts          <%= readers.flatten.join(', ') %>
-  ips            <%= reader_virtual_ips.flatten.join(', ') %>
+  hosts          <%= readers.join(', ') %>
+  ips            <%= reader_virtual_ips.join(', ') %>
   mode           balanced
 </role>
 <% end %>

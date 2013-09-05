@@ -19,10 +19,9 @@ include mmm_common<%= h_cluster_name %>.conf
   status_path     /var/lib/misc/mmm_mond<%= h_cluster_name %>.status
 <%
   ips = [];
-  mastersflat = masters.flatten;
 
-  mastersflat.each_index { |i| ips << mastersflat[i] if i % 3 == 1 }
-  slaves.each_index{ |i| ips << slaves[i] if i % 2 == 1 }
+  masters.each { |master| ips << master["ip"] }
+  slaves.each { |slave| ips << slave["ip"] }
 -%>
   ping_ips        <%= ips.join(', ') %>
   auto_set_online 60

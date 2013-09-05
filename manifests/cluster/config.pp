@@ -18,9 +18,9 @@
 #   credentials used for mmm monitor
 # monitor_ip           => '127.0.0.1',
 #   IP on which monitor runs from perspective of monitor config, almost always 127.0.0.1
-# masters              => [['master01','192.168.159.x', 'master02'], ['master02', '192.168.159.y', 'master01']],
+# masters              => ['master01', 'master02'],
 #   two-dimensional array of masters, their physical ip and peer ip
-# slaves            => [['slave01', '192.168.159.z'], ['slave02', '192.168.159.za']],
+# slaves            => ['slave01', 'slave02'],
 #   two-dimensional array of slaves and their physical ips
 # readers          => ['master01', 'master02', 'slave01', 'slave02'],
 #   list of nodes that can have reader roles
@@ -57,7 +57,7 @@ define mmm::cluster::config(
   $readers = [],
   $writer_virtual_ip,
   $reader_virtual_ips = [],
-  $localsubnet,
+  $localsubnet = 'localhost',
   $reader_user = '',
   $reader_pass = '',
   $writer_user,
@@ -68,29 +68,40 @@ define mmm::cluster::config(
 
   # $ipaddresses is a custom fact, defined in the mmm module. It greps ifconfig
   # and lists all ipaddresses in a semi-colon separated list
+  # TODO: figure out what this is for
   $ipadd_array = split($::ipaddresses, ';')
+
+  validate_re($mmm_type, [ '^agent$', '^monitor$' ], "mmm_type: Expected agent or monitor, got ${mmm_type}")
 
   # bad way to get the mmm::common::config to create a non-renamed config
   # file when this is an agent node (on an agent node there is no need to be
   # aware of multiple clusters as an agent is always only part of one cluster)
-  if $mmm_type == 'agent' {
-    $real_cluster_name = ''
+  $real_cluster_name = $mmm_type ? { agent => '', default => $cluster_name }
+
+  if size($masters) >= 1 {
+    $real_masters = mmm_masters($masters)
   } else {
-    $real_cluster_name = $cluster_name
+    $real_masters = $masters
+  }
+
+  if size($slaves) >= 1 {
+    $real_slaves = mmm_slaves($slaves)
+  } else {
+    $real_slaves = $slaves
   }
 
   # This takes care of the configuration part for mmm::common. Note that this
   # has been separated from the class that installs mmm::common, since when
   # there are multiple clusters this define is called multiple times, and
   # pupept doesnt allow to specify resources multiple times
-  mmm::common::config{ $name:
+  mmm::common::config { $name:
     replication_user     => $replication_user,
     replication_password => $replication_password,
     agent_user           => $agent_user,
     agent_password       => $agent_password ,
     cluster_interface    => $cluster_interface,
     cluster_name         => $real_cluster_name,
-    masters              => $masters,
+    masters              => $real_masters,
     slaves               => $slaves,
     readers              => $readers,
     writer_virtual_ip    => $writer_virtual_ip,
@@ -99,7 +110,7 @@ define mmm::cluster::config(
 
   case $mmm_type {
     'agent': {
-      mmm::agent::config{ $name:
+      mmm::agent::config { $name:
         localsubnet          => $localsubnet,
         replication_user     => $replication_user,
         replication_password => $replication_password,
@@ -115,17 +126,17 @@ define mmm::cluster::config(
         reader_virtual_ips   => $reader_virtual_ips,
       }
     }
+
     'monitor': {
-      mmm::monitor::config{ $name:
-        port                 => $port,
-        cluster_name         => $real_cluster_name,
-        monitor_ip           => $monitor_ip,
-        masters              => $masters,
-        slaves               => $slaves,
-        monitor_user         => $monitor_user,
-        monitor_password     => $monitor_password,
+      mmm::monitor::config { $name:
+        port             => $port,
+        cluster_name     => $real_cluster_name,
+        monitor_ip       => $monitor_ip,
+        masters          => $real_masters,
+        slaves           => $slaves,
+        monitor_user     => $monitor_user,
+        monitor_password => $monitor_password,
       }
     }
-    default: { err("No ${mmm_type} defined for this node") }
   }
 }
