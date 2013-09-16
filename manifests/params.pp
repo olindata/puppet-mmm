@@ -6,8 +6,5 @@ class mmm::params {
   ## Is this a multi-mmm setup? this variable is needed to set to 
   ## true when multiple mmm clusters are monitored by a single mmm monitoring node 
   ## Example: $::mmm_multi_cluster_monitor = TRUE
-  $multi_cluster_monitor = $::mmm_multi_cluster_monitor ? {
-    ''      => FALSE,
-    default => $::mmm_multi_cluster_monitor,
-  }
+  $multi_cluster_monitor = hiera('mmm_multi_cluster_monitor', false)
 }
