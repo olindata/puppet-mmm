@@ -1,7 +1,6 @@
 class mmm::agent(
   $enabled = true
 ) {
-  include mysql::server
   include mmm::params
   include mmm::common
 
