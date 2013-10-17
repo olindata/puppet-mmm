@@ -14,9 +14,9 @@ include mmm_common<%= h_cluster_name %>.conf
 
 <monitor>
   ip              <%= @monitor_ip %>
-  pid_path        <%= @pid_path %>
-  bin_path        <%= @bin_path %>
-  status_path     <%= @status_path %>
+  pid_path        <%= @mmm::params::pid_path %>
+  bin_path        <%= @mmm::params::bin_path %>
+  status_path     <%= @mmm::params::status_path %>
 <%
   ips = [];
 

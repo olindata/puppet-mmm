@@ -6,7 +6,7 @@ class mmm::agent(
 
   validate_bool($enabled)
 
-  package { 'mysql-mmm-agent':
+  package { $mmm::params::agent_package:
     ensure  => 'present',
     require => Package['mysql-server']
   }

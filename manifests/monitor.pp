@@ -11,7 +11,7 @@ class mmm::monitor(
     group   => 'root',
   }
   
-  package { 'mysql-mmm-monitor':
+  package { $mmm::params::monitor_package:
     ensure => installed
   }
   
