@@ -21,6 +21,7 @@ define mmm::agent::config(
   }
 
   Mysql_grant {
+    table   => '*.*',
     require => Package['mysql-server'],
   }
 
