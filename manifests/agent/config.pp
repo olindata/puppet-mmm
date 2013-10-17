@@ -16,11 +16,11 @@ define mmm::agent::config(
   include mmm::params
 
   # resource defaults
-  Database_user {
+  Mysql_user {
     require => Package['mysql-server'],
   }
 
-  Database_grant {
+  Mysql_grant {
     require => Package['mysql-server'],
   }
 
@@ -31,53 +31,53 @@ define mmm::agent::config(
     require => Package['mysql-mmm-agent'],
   }
 
-  database_user { $replication_user:
+  mysql_user { $replication_user:
     name          => "${replication_user}@${localsubnet}",
     password_hash => mysql_password($replication_password),
   }
 
-  database_grant { "${replication_user}@${localsubnet}":
+  mysql_grant { "${replication_user}@${localsubnet}":
     privileges => ['repl_slave_priv'],
   }
 
-  database_user { $agent_user:
+  mysql_user { $agent_user:
     name          => "${agent_user}@${localsubnet}",
     password_hash => mysql_password($agent_password),
   }
 
-  database_grant { "${agent_user}@${localsubnet}":
+  mysql_grant { "${agent_user}@${localsubnet}":
     privileges => ['repl_client_priv', 'super_priv', 'process_priv'],
   }
 
   if ($monitor_user != $agent_user) {
-    database_user { $monitor_user:
+    mysql_user { $monitor_user:
       name          => "${monitor_user}@${localsubnet}",
       password_hash => mysql_password($monitor_password),
     }
 
-    database_grant { "${monitor_user}@${localsubnet}":
+    mysql_grant { "${monitor_user}@${localsubnet}":
       privileges => ['repl_client_priv'],
     }
   }
 
   # only create reader user if it is specified, on clusters without readers it won't be necessary
   if ($reader_user != '') {
-    database_user { $reader_user:
+    mysql_user { $reader_user:
       name          => "${reader_user}@${localsubnet}",
       password_hash => mysql_password($reader_pass),
     }
 
-    database_grant { "${reader_user}@${localsubnet}":
+    mysql_grant { "${reader_user}@${localsubnet}":
       privileges => ['select_priv'],
     }
   }
 
-  database_user { $writer_user:
+  mysql_user { $writer_user:
     name          => "${writer_user}@${localsubnet}",
     password_hash => mysql_password($writer_pass),
   }
 
-  database_grant { "${writer_user}@${localsubnet}":
+  mysql_grant { "${writer_user}@${localsubnet}":
     privileges => ['select_priv', 'update_priv', 'insert_priv', 'delete_priv', 'create_priv', 'alter_priv', 'drop_priv'],
   }
 
