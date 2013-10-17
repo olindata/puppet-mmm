@@ -39,6 +39,7 @@ define mmm::agent::config(
 
   mysql_grant { "${replication_user}@${localsubnet}":
     privileges => ['repl_slave_priv'],
+    user       => "${replication_user}@${localsubnet}",
   }
 
   mysql_user { $agent_user:
@@ -48,6 +49,7 @@ define mmm::agent::config(
 
   mysql_grant { "${agent_user}@${localsubnet}":
     privileges => ['repl_client_priv', 'super_priv', 'process_priv'],
+    user       => "${replication_user}@${localsubnet}",
   }
 
   if ($monitor_user != $agent_user) {
@@ -58,6 +60,7 @@ define mmm::agent::config(
 
     mysql_grant { "${monitor_user}@${localsubnet}":
       privileges => ['repl_client_priv'],
+      user       => "${replication_user}@${localsubnet}",
     }
   }
 
@@ -70,6 +73,7 @@ define mmm::agent::config(
 
     mysql_grant { "${reader_user}@${localsubnet}":
       privileges => ['select_priv'],
+      user       => "${replication_user}@${localsubnet}",
     }
   }
 
@@ -80,6 +84,7 @@ define mmm::agent::config(
 
   mysql_grant { "${writer_user}@${localsubnet}":
     privileges => ['select_priv', 'update_priv', 'insert_priv', 'delete_priv', 'create_priv', 'alter_priv', 'drop_priv'],
+    user       => "${replication_user}@${localsubnet}",
   }
 
   file { '/etc/mysql-mmm/mmm_agent.conf':
