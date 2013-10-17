@@ -33,7 +33,11 @@ active_master_role  writer
 </host>
 <% end -%>
 
-<% slaves.each do |slave| -%>
+<% 
+  slave_names = []
+  slaves.each do |slave|
+    slave_names << slave["host"] 
+-%>
 <host <%= slave["host"] %>>
   ip            <%= slave["ip"] %>
   mode          slave
