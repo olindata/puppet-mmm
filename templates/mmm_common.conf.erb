@@ -9,16 +9,16 @@
 active_master_role  writer
 
 <host default>
-  cluster_interface       <%= cluster_interface %>
+  cluster_interface       <%= @cluster_interface %>
 
-  pid_path                /var/run/mmm_agentd.pid
-  bin_path                /usr/lib/mysql-mmm/
+  pid_path                <%= @pid_path %>
+  bin_path                <%= @bin_path %>
 
-  replication_user        <%= replication_user %>
-  replication_password    <%= replication_password %>
+  replication_user        <%= @replication_user %>
+  replication_password    <%= @replication_password %>
 
-  agent_user              <%= agent_user %>
-  agent_password          <%= agent_password %>
+  agent_user              <%= @agent_user %>
+  agent_password          <%= @agent_password %>
 </host>
 
 <%
@@ -26,10 +26,10 @@ active_master_role  writer
   masters.each do |master|
     master_names << master["host"]
 -%>
-<host <%= master["host"] %>>
-  ip            <%= master["ip"] %>
+<host <%= @master["host"] %>>
+  ip            <%= @master["ip"] %>
   mode          master
-  peer          <%= master["peer"] %>
+  peer          <%= @master["peer"] %>
 </host>
 <% end -%>
 
@@ -38,15 +38,15 @@ active_master_role  writer
   slaves.each do |slave|
     slave_names << slave["host"] 
 -%>
-<host <%= slave["host"] %>>
-  ip            <%= slave["ip"] %>
+<host <%= @slave["host"] %>>
+  ip            <%= @slave["ip"] %>
   mode          slave
 </host>
 <% end -%>
 
 <role writer>
   hosts          <%= master_names.join(', ') %>
-  ips            <%= writer_virtual_ip %>
+  ips            <%= @writer_virtual_ip %>
   mode           exclusive
 </role>
 

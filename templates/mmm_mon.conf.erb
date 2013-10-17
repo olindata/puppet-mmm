@@ -13,10 +13,10 @@
 include mmm_common<%= h_cluster_name %>.conf
 
 <monitor>
-  ip              <%= monitor_ip %>
-  pid_path        /var/run/mmm_mond<%= h_cluster_name %>.pid
-  bin_path        /usr/lib/mysql-mmm/
-  status_path     /var/lib/misc/mmm_mond<%= h_cluster_name %>.status
+  ip              <%= @monitor_ip %>
+  pid_path        <%= @pid_path %>
+  bin_path        <%= @bin_path %>
+  status_path     <%= @status_path %>
 <%
   ips = [];
 
@@ -26,13 +26,13 @@ include mmm_common<%= h_cluster_name %>.conf
   ping_ips        <%= ips.join(', ') %>
   auto_set_online 60
 <% if cluster_name != '' -%>
-  port          <%= port %>
+  port          <%= @port %>
 <% end -%>
 </monitor>
 
 <host default>
-  monitor_user        <%= monitor_user %>
-  monitor_password    <%= monitor_password %>
+  monitor_user        <%= @monitor_user %>
+  monitor_password    <%= @monitor_password %>
 </host>
 
 debug 0
