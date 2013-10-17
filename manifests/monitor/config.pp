@@ -17,7 +17,7 @@ define mmm::monitor::config(
     ensure  => file,
     owner   => 'root',
     group   => 'root',
-    require => Package['mysql-mmm-monitor'],
+    require => Package[$mmm::params::monitor_package],
   }
 
   Service {
@@ -85,7 +85,7 @@ define mmm::monitor::config(
 
       file { $mon_init_d_name:
         mode    => 0755,
-        content => template('mmm/mon-init-d.erb'),
+        content => template("mmm/mon-init-d.${::osfamily}.erb"),
       }
 
       service { $service_name:

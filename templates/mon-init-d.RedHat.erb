@@ -1,0 +1,86 @@
+#!/bin/sh
+#
+# mysql-mmm-monitor  This shell script takes care of starting and stopping
+#                    the mmm monitoring daemon.
+#
+# chkconfig: - 64 36
+# description:  MMM Monitor.
+# processname: mmm_mond
+# config: /etc/mysql-mmm/mmm_mon.conf
+# pidfile: /var/run/mysql-mmm/mmm_mond.pid
+
+# Source function library and defaults file.
+. /etc/rc.d/init.d/functions
+. /etc/default/mysql-mmm-monitor
+
+# Cluster name (it can be empty for default cases)
+CLUSTER=''
+LOCKFILE='/var/lock/subsys/mysql-mmm-monitor'
+prog='MMM Monitor Daemon'
+
+if [ "$CLUSTER" != "" ]; then
+        MMMD_MON_BIN="/usr/sbin/mmm_mond @$CLUSTER"
+        MMMD_MON_PIDFILE="/var/run/mysql-mmm/mmm_mond-$CLUSTER.pid"
+else
+        MMMD_MON_BIN="/usr/sbin/mmm_mond"
+        MMMD_MON_PIDFILE="/var/run/mysql-mmm/mmm_mond.pid"
+fi
+
+start() {
+        if [ "${ENABLED}" != "1" ]; then
+                echo "$prog is disabled!"
+                exit 1
+        fi
+        echo -n "Starting $prog: "
+        if [ -s $MMMD_MON_PIDFILE ] && kill -0 `cat $MMMD_MON_PIDFILE` 2> /dev/null; then
+            echo " already running."
+            exit 0
+        fi
+        daemon $MMMD_MON_BIN
+        RETVAL=$?
+        echo
+        [ $RETVAL = 0 ] && touch $LOCKFILE
+        return $RETVAL
+}
+
+stop() {
+        # Stop daemon.
+        echo -n "Stopping $prog: "
+        killproc -p $MMMD_MON_PIDFILE $MMMD_MON_BIN
+        RETVAL=$?
+        echo
+        [ $RETVAL = 0 ] && rm -f $LOCKFILE
+        return $RETVAL
+}
+
+case "$1" in
+  start)
+        start
+        ;;
+
+  stop)
+        stop
+        ;;
+
+  status)
+        status -p $MMMD_MON_PIDFILE $MMMD_MON_BIN
+        RETVAL=$?
+        ;;
+
+  restart|reload)
+        stop
+        start
+        ;;
+
+  condrestart)
+        if [ -f $LOCKFILE ]; then
+                stop
+                start
+        fi
+        ;;
+  *)
+        echo "Usage: $0 {start|stop|restart|condrestart|status}"
+        ;;
+esac
+
+exit $RETVAL
