@@ -38,7 +38,7 @@ define mmm::agent::config(
   }
 
   mysql_grant { "${replication_user}@${localsubnet}":
-    privileges => ['repl_slave_priv'],
+    privileges => ['replication slave'],
     user       => "${replication_user}@${localsubnet}",
   }
 
@@ -48,7 +48,7 @@ define mmm::agent::config(
   }
 
   mysql_grant { "${agent_user}@${localsubnet}":
-    privileges => ['repl_client_priv', 'super_priv', 'process_priv'],
+    privileges => ['replication client', 'super', 'process'],
     user       => "${replication_user}@${localsubnet}",
   }
 
@@ -59,7 +59,7 @@ define mmm::agent::config(
     }
 
     mysql_grant { "${monitor_user}@${localsubnet}":
-      privileges => ['repl_client_priv'],
+      privileges => ['replication client'],
       user       => "${replication_user}@${localsubnet}",
     }
   }
@@ -72,7 +72,7 @@ define mmm::agent::config(
     }
 
     mysql_grant { "${reader_user}@${localsubnet}":
-      privileges => ['select_priv'],
+      privileges => ['select'],
       user       => "${replication_user}@${localsubnet}",
     }
   }
@@ -83,7 +83,7 @@ define mmm::agent::config(
   }
 
   mysql_grant { "${writer_user}@${localsubnet}":
-    privileges => ['select_priv', 'update_priv', 'insert_priv', 'delete_priv', 'create_priv', 'alter_priv', 'drop_priv'],
+    privileges => ['select', 'update', 'insert', 'delete', 'create', 'alter', 'drop'],
     user       => "${replication_user}@${localsubnet}",
   }
 
