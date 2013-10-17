@@ -23,7 +23,7 @@ define mmm::common::config(
         owner   => 'root',
         group   => 'root',
         content => template('mmm/mmm_common.conf.erb'),
-        require => Package['mysql-mmm-common'],
+        require => Package[$mmm::params::common_package],
       }
     }
     default: {
@@ -52,7 +52,7 @@ define mmm::common::config(
         owner   => 'root',
         group   => 'root',
         content => template('mmm/mmm_common.conf.erb'),
-        require => Package['mysql-mmm-common'],
+        require => Package[$mmm::params::common_package],
       }
     }
   }

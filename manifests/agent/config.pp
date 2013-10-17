@@ -29,7 +29,7 @@ define mmm::agent::config(
     ensure  => file,
     owner   => 'root',
     group   => 'root',
-    require => Package['mysql-mmm-agent'],
+    require => Package[$mmm::params::agent_package],
   }
 
   mysql_user { $replication_user:
@@ -100,7 +100,7 @@ define mmm::agent::config(
   service { 'mysql-mmm-agent':
     ensure     => running,
     subscribe  => [
-      Package['mysql-mmm-agent'],
+      Package[$mmm::params::agent_package],
       File['/etc/mysql-mmm/mmm_agent.conf'],
       File['/etc/mysql-mmm/mmm_common.conf']
     ],
