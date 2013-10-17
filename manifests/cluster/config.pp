@@ -102,7 +102,7 @@ define mmm::cluster::config(
     cluster_interface    => $cluster_interface,
     cluster_name         => $real_cluster_name,
     masters              => $real_masters,
-    slaves               => $slaves,
+    slaves               => $real_slaves,
     readers              => $readers,
     writer_virtual_ip    => $writer_virtual_ip,
     reader_virtual_ips   => $reader_virtual_ips,
@@ -133,7 +133,7 @@ define mmm::cluster::config(
         cluster_name     => $real_cluster_name,
         monitor_ip       => $monitor_ip,
         masters          => $real_masters,
-        slaves           => $slaves,
+        slaves           => $real_slaves,
         monitor_user     => $monitor_user,
         monitor_password => $monitor_password,
       }
