@@ -9,7 +9,9 @@ define mmm::common::config(
   $slaves,
   $readers,
   $writer_virtual_ip,
-  $reader_virtual_ips
+  $reader_virtual_ips,
+  $bin_path = $mmm::params::bin_path,
+  $pid_path = $mmm::params::pid_path,
 ) {
   include mmm::params
   

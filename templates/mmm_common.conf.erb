@@ -11,8 +11,8 @@ active_master_role  writer
 <host default>
   cluster_interface       <%= @cluster_interface %>
 
-  pid_path                <%= @mmm::params::pid_path %>
-  bin_path                <%= @mmm::params::bin_path %>
+  pid_path                <%= @pid_path %>
+  bin_path                <%= @bin_path %>
 
   replication_user        <%= @replication_user %>
   replication_password    <%= @replication_password %>

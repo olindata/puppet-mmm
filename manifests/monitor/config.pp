@@ -5,7 +5,10 @@ define mmm::monitor::config(
   $masters,
   $slaves,
   $monitor_user,
-  $monitor_password
+  $monitor_password,
+  $bin_path = $mmm::params::bin_path,
+  $pid_path = $mmm::params::pid_path,
+  $status_path = $mmm::params::status_path
 ) {
   include mmm::params
 
