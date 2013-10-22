@@ -26,10 +26,10 @@ active_master_role  writer
   masters.each do |master|
     master_names << master["host"]
 -%>
-<host <%= @master["host"] %>>
-  ip            <%= @master["ip"] %>
+<host <%= master["host"] %>>
+  ip            <%= master["ip"] %>
   mode          master
-  peer          <%= @master["peer"] %>
+  peer          <%= master["peer"] %>
 </host>
 <% end -%>
 
@@ -38,8 +38,8 @@ active_master_role  writer
   slaves.each do |slave|
     slave_names << slave["host"] 
 -%>
-<host <%= @slave["host"] %>>
-  ip            <%= @slave["ip"] %>
+<host <%= slave["host"] %>>
+  ip            <%= slave["ip"] %>
   mode          slave
 </host>
 <% end -%>
